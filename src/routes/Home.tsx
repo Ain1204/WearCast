@@ -1,12 +1,12 @@
 import { styled } from "styled-components";
-import { Outlet } from "react-router-dom";
+import WeatherComponent from "../components/WeatherComponent";
 
 const ContentSection = styled.section``;
 const Home = () => {
   return (
     <>
       <ContentSection>
-        <Outlet />
+        <WeatherComponent />
       </ContentSection>
     </>
   );

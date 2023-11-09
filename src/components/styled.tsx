@@ -13,13 +13,5 @@ font-size: 62.5%; // 1rem = 10px 로 변경 한 것, 바꾼 이유는 사파리�
     }
 }
 
-body {
-    background: white;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, sans-serif, Roboto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+
 `;
