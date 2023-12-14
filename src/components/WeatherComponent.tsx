@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import mainimg from "../assets/main.jpeg";
-import searchicon from "../assets/searchicon.svg";
-
-const imageStyle = {
-  filter: "blur(5px)", // blur 효과를 적용 (픽셀 단위로 블러 정도 조절 가능)
-};
+import weatherCloudy from "../assets/weathercloudy.svg";
 
 function Weather() {
   const [weatherData, setWeatherData] = useState({
@@ -17,7 +12,7 @@ function Weather() {
     icon: "",
     loading: true,
   });
-  const [cityName, setCityName] = useState("Seoul"); // Default city name
+  const [cityName, setCityName] = useState("Seoul");
   const [recommendedClothing, setRecommendedClothing] = useState("");
 
   useEffect(() => {
@@ -31,11 +26,7 @@ function Weather() {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        // 날씨 정보 확인
-        console.log(data);
-
         const temperature = data.main.temp;
-        console.log("온도: " + temperature);
 
         setWeatherData({
           temp: data.main.temp,
@@ -51,6 +42,35 @@ function Weather() {
       })
       .catch((error) => console.log(error));
   };
+  const today = new Date();
+
+  const formattedDate = ` ${today.getFullYear()}년 ${
+    today.getMonth() + 1
+  }월 ${today.getDate()}일`;
+
+  const defaultCityList = [
+    "Seoul",
+    "Busan",
+    "Incheon",
+    "Daegu",
+    "Daejeon",
+    "Gwangju",
+    "Ulsan",
+    "Jeju",
+    "Suwon",
+    "Gapyeong",
+    "Gwacheon",
+    "Namyangju",
+    "Bucheon",
+    "Ansan",
+    "Anyang",
+    "Yangpyeong",
+    "Yeoncheon",
+    "Yongin",
+    "Uijeongbu",
+    "Hwaseong",
+  ];
+
   const recommendClothing = (temperature) => {
     const celsiusTemperature = temperature - 273.15;
     if (celsiusTemperature >= 28) {
@@ -90,152 +110,179 @@ function Weather() {
   if (weatherData.loading) {
     return <p>Loading</p>;
   }
+
   return (
     <Wrapper>
       <BannerContainer>
         <MainImageContainer>
           <SearchContainer>
             <SearchInput
-              placeholder="도시 검색"
               value={cityName}
               onChange={(e) => setCityName(e.target.value)}
-            />
-            <SearchiconBtn
-              src={searchicon}
-              onClick={fetchWeatherData} // Trigger weather data fetch
-            />
+            >
+              {defaultCityList.map((city) => (
+                <option key={city} value={city}>
+                  {city}
+                </option>
+              ))}
+            </SearchInput>
           </SearchContainer>
-          <Container>
-            <StyledImage src={mainimg} style={imageStyle} />
-            <WeatherContainer>
-              <MaxMin>
-                최고: {(weatherData.temp_max - 273.15).toFixed(0)}° 최저:{" "}
+          <WeatherContainer>
+            <MaxMin>
+              <CurrentTemperature>
+                {(weatherData.temp - 273.15).toFixed(1)}°C
+              </CurrentTemperature>
+              <MaxMinTemperature>
+                최고:
+                {(weatherData.temp_max - 273.15).toFixed(0)}° 최저:
                 {(weatherData.temp_min - 273.15).toFixed(0)}°
-              </MaxMin>
-            </WeatherContainer>
-          </Container>
+              </MaxMinTemperature>
+            </MaxMin>
+            <Weatheritem>
+              <img src={weatherCloudy} />
+            </Weatheritem>
+          </WeatherContainer>
         </MainImageContainer>
       </BannerContainer>
       <ClothesMain>
-        <ClothesItem>
-          <ClothesTextTitle>오늘 추천하는 옷</ClothesTextTitle>
-          <ClothesTextsub>{recommendedClothing}</ClothesTextsub>
-        </ClothesItem>
-        <ContentSection>서치</ContentSection>
+        <ClothesTextTitle>
+          <p>오늘 추천하는 옷</p>
+          <Dday>{formattedDate}</Dday>
+        </ClothesTextTitle>
+        <ClothesTextsub>
+          <p>{recommendedClothing}</p>
+        </ClothesTextsub>
       </ClothesMain>
     </Wrapper>
   );
 }
 
-const Wrapper = styled.div``;
-const BannerContainer = styled.div`
-  background-color: #ffffff;
-  height: 55vh;
-  width: 90%;
+const Wrapper = styled.div`
+  height: 75vh;
+  width: 100%;
   margin: auto;
+`;
+const BannerContainer = styled.div`
+  height: 100%;
+  width: 100%;
 `;
 const MainImageContainer = styled.div`
+  background: linear-gradient(45deg, #ffd0d0, #a47eb7);
   position: relative;
   width: 100%;
-  height: 55vh;
-  background: linear-gradient(to bottom, transparent, #fefefe);
+  height: 100%;
 `;
 const SearchContainer = styled.div`
-  height: 9vh;
-`;
-
-const SearchInput = styled.input`
-  position: absolute;
-  top: 20px;
-  left: 35%;
-  background-color: #d6d6d6;
-  border: none;
-  border-radius: 10px;
-  width: 30%;
-  height: 5vh;
-  align-items: center;
-  text-align: center;
-  display: flex;
-`;
-const SearchiconBtn = styled.img`
-  width: 20px;
-  height: 20px;
-  margin-left: 81vh;
-  padding: 3vh;
-
-  align-items: center;
-  text-align: center;
-  display: flex;
-  cursor: pointer;
-`;
-const StyledImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-`;
-
-const Container = styled.div`
-  position: absolute;
-  bottom: 50px;
-  width: 100%;
-  height: 40vh;
-  display: flex;
-  border-radius: 10px;
-  margin: auto 0;
-`;
-const WeatherContainer = styled.div`
-  position: absolute;
-  bottom: 10px;
-  width: 100%;
-  height: 40vh;
-  background-color: rgb(249, 250, 251, 0.5);
-  display: flex;
-`;
-const MaxMin = styled.div`
-  color: #1d1617;
+  height: 150px;
   margin: auto;
   align-items: center;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+`;
 
-  font-size: 66px;
-  font-weight: 700;
+const SearchInput = styled.select`
+  border: none;
+  border-radius: 30px;
+  width: 295px;
+  height: 64px;
+  -webkit-appearance: none; /* for chrome */
+  -moz-appearance: none; /*for firefox*/
+  appearance: none;
+  text-align: center;
+`;
+
+const WeatherContainer = styled.div`
+  width: 100%;
+`;
+
+const MaxMin = styled.div`
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+`;
+const CurrentTemperature = styled.div`
+  color: #fff;
+  text-align: center;
+  font-family: Pretendarad;
+  font-size: 98px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 70px;
+  letter-spacing: 0.374px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+`;
+const MaxMinTemperature = styled.div`
+  color: #fff;
+  text-align: center;
+  font-family: Pretendarad;
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 200;
+  line-height: 24px;
+  letter-spacing: 0.38px;
+  margin-bottom: 10px;
+`;
+
+const Weatheritem = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  img {
+    width: 320px;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
 `;
 
 const ClothesMain = styled.div`
-  background-color: aqua;
-  width: 90%;
-  height: 33vh;
-  margin: auto;
+  width: 100%;
   display: flex;
-`;
-
-const ClothesItem = styled.div`
-  background-color: #f9fafb;
-  width: 30%;
-  height: 33vh;
+  background-color: aliceblue;
 `;
 
 const ClothesTextTitle = styled.div`
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.6;
-  color: #191f28;
-  text-align: center;
-  margin-bottom: 50px;
+  width: 50%;
+  p {
+    color: #000000;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: Pretendarad;
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 200;
+    line-height: 70px;
+    letter-spacing: 0.374px;
+    height: 10%;
+  }
+  :nth-child(2) {
+    color: #000000;
+    text-align: center;
+    font-family: Pretendarad;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 200;
+    line-height: 70px;
+    letter-spacing: 0.374px;
+  }
 `;
+const Dday = styled.div``;
 const ClothesTextsub = styled.div`
-  font-size: 23px;
-  font-weight: 600;
-  line-height: 1.5;
-  color: rgb(51, 61, 75);
-`;
-
-const ContentSection = styled.section`
-  background-color: #000275;
-  margin-left: 30%;
-  width: 40%;
-  height: 33vh;
+  p {
+    font-size: 23px;
+    color: #000000;
+    text-align: center;
+    font-family: Pretendarad;
+    font-style: normal;
+    font-weight: 200;
+    line-height: 70px;
+    letter-spacing: 0.374px;
+    padding: 10px 120px 10px 120px;
+  }
 `;
 
 export default Weather;
