@@ -18,7 +18,7 @@ function Weather() {
 
   useEffect(() => {
     const cityName = "Incheon";
-    const apiKey = "430712ee32e8bfd14432fd3edb17c173";
+    const apiKey = "";
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
 
     fetch(url)
